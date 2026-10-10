@@ -20,7 +20,7 @@ p { margin: 0; color: var(--vscode-descriptionForeground); }
 [data-status="paused"] .status-dot, [data-status="empty"] .status-dot { background: var(--vscode-descriptionForeground); }
 [data-status="waiting"] .status-dot, [data-status="inspecting"] .status-dot { background: var(--vscode-editorWarning-foreground, #cca700); }
 [data-status="playing"] .status-dot, [data-status="preparing"] .status-dot { background: var(--vscode-progressBar-background); }
-#status-detail { margin-top: 4px; font-size: 11px; min-height: 3em; overflow-wrap: anywhere; }
+#status-detail { margin-top: 4px; font-size: 11px; height: 3em; overflow: hidden; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 .file { margin-top: 6px; height: 1.5em; font: 11px/1.5 var(--vscode-editor-font-family, monospace); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 progress { display: block; width: 100%; height: 3px; margin-top: 8px; border: 0; accent-color: var(--vscode-progressBar-background); }
 progress::-webkit-progress-bar { background: var(--vscode-input-background); }
