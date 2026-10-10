@@ -35,3 +35,21 @@ test('invalid helper arguments produce no activity file', t => {
   }
   assert.equal(fs.existsSync(path.join(root, '.codex-live-follow')), false);
 });
+
+test('the inspection helper cannot write through a linked activity directory', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'specter-linked-'));
+  const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'specter-outside-'));
+  t.after(() => {
+    fs.rmSync(root, { recursive: true, force: true });
+    fs.rmSync(outside, { recursive: true, force: true });
+  });
+  fs.writeFileSync(path.join(root, 'demo.js'), 'source');
+  fs.writeFileSync(path.join(outside, 'activity.json'), 'leave this alone');
+  fs.symlinkSync(outside, path.join(root, '.codex-live-follow'), 'junction');
+  const helper = path.join(__dirname, '..', 'src', 'inspection-helper.js');
+  const result = spawnSync(process.execPath, [helper, 'demo.js', '1', 'checking'], { cwd: root, encoding: 'utf8' });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /regular folder/);
+  assert.equal(fs.readFileSync(path.join(outside, 'activity.json'), 'utf8'), 'leave this alone');
+  assert.deepEqual(fs.readdirSync(outside), ['activity.json']);
+});

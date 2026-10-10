@@ -36,7 +36,7 @@ class LiveFollow {
     this.debounce = new DebouncedReads(reads => {
       this.updateStatus();
       for (const { uri, revision, generation } of reads) {
-        void this.handleWrite(uri, revision, generation).catch(error => this.log(`Read failed: ${String(error)}`));
+        void this.handleWrite(uri, revision, generation).catch(error => this.log(`read failed: ${String(error)}`));
       }
     }, key => { this.skipped++; this.releaseRevision(key); });
     this.pendingReads = this.debounce.pending;
@@ -58,9 +58,9 @@ class LiveFollow {
     this.initializing = false;
     this.quietUntil = 0;
     this.windowFocused = vscode.window.state?.focused !== false;
-    this.output = vscode.window.createOutputChannel('Specter');
+    this.output = vscode.window.createOutputChannel('specter');
     this.status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    this.status.name = 'Specter';
+    this.status.name = 'specter';
     this.status.command = 'codexLiveFollow.controls';
     this.replayEmitter = new vscode.EventEmitter();
     this.stateEmitter = new vscode.EventEmitter();
@@ -104,12 +104,12 @@ class LiveFollow {
       await this.context.workspaceState.update('followDecision', false);
       const generation = this.generation;
       const choice = await this.api.window.showInformationMessage(
-        'Enable Specter for this project? It will replay saved changes and open the edited files.',
-        'Enable for this project', 'Keep paused');
+        'enable specter for this project? it will replay saved changes and open the edited files.',
+        'enable for this project', 'keep paused');
       if (this.disposed || generation !== this.generation) return;
-      if (choice === 'Enable for this project') await this.setSetting('enabled', true);
+      if (choice === 'enable for this project') await this.setSetting('enabled', true);
     } catch (error) {
-      this.log(`Could not show first-use controls: ${String(error)}`);
+      this.log(`could not show first-use controls: ${String(error)}`);
     } finally {
       this.promptPending = false;
       this.applyConfiguration();
@@ -144,38 +144,38 @@ class LiveFollow {
 
   getState() {
     let status = 'watching';
-    let title = 'Waiting for saves';
-    let detail = 'The next saved change will show up here.';
+    let title = 'waiting for saves';
+    let detail = 'the next saved change will show up here.';
     if (!this.api.workspace.workspaceFolders?.length && !this.demoJob) {
-      status = 'empty'; title = 'Open a project folder'; detail = 'Open a project to get started.';
+      status = 'empty'; title = 'open a project folder'; detail = 'open a project to get started.';
     } else if (!this.enabled && !this.demoJob) {
-      status = 'paused'; title = 'Paused'; detail = 'Enable replay to show saved edits.';
+      status = 'paused'; title = 'paused'; detail = 'enable replay to show saved edits.';
     } else if (this.initializing) {
-      status = 'preparing'; title = 'Reading project files'; detail = 'Getting ready to watch for changes.';
+      status = 'preparing'; title = 'reading project files'; detail = 'getting ready to watch for changes.';
     } else if (this.isWaiting()) {
       status = 'waiting';
       const background = !this.windowFocused && this.config('pauseWhenUnfocused', true);
-      title = background ? 'Waiting for this window' : 'Waiting while you work';
-      detail = background ? 'Resumes when you come back to VS Code.' :
-        `Resumes after ${this.numberConfig('idleDelayMs', 3000, 500, 60000) / 1000} seconds idle.`;
+      title = background ? 'waiting for this window' : 'waiting while you work';
+      detail = background ? 'resumes when you come back to vs code.' :
+        `resumes after ${this.numberConfig('idleDelayMs', 3000, 500, 60000) / 1000} seconds idle.`;
     } else if (this.currentJob && !this.currentJob.cancelled) {
-      status = 'playing'; title = 'Replaying an edit'; detail = 'Showing the latest save.';
-      if (this.currentJob.truncated) detail = 'Replay hit its time limit; showing the saved file.';
+      status = 'playing'; title = 'replaying an edit'; detail = 'showing the latest save.';
+      if (this.currentJob.truncated) detail = 'replay hit its time limit; showing the saved file.';
       if (this.currentJob.kind === 'inspection') {
         status = 'inspecting';
-        title = this.currentJob.phase === 'suspect' ? 'Checking a hunch' : 'Taking a look';
+        title = this.currentJob.phase === 'suspect' ? 'checking a hunch' : 'taking a look';
         detail = this.currentJob.message;
       }
       if (this.currentJob.demo) {
-        title = status === 'inspecting' ? 'Testing a line inspection' : 'Testing typing replay';
-        if (status === 'playing') detail = '30-second demo. Try the speed slider or Skip current.';
+        title = status === 'inspecting' ? 'testing a line inspection' : 'testing typing replay';
+        if (status === 'playing') detail = '30-second demo. try the speed slider or skip current.';
       }
     }
     const job = this.currentJob && !this.currentJob.cancelled ? this.currentJob : undefined;
     return {
       enabled: this.enabled, status, title, detail,
       configurationScope: this.api.workspace.workspaceFolders?.length ? 'workspace' : 'user',
-      file: job ? (job.demo ? 'Specter-test.js' : this.api.workspace.asRelativePath(job.uri, false)) : '',
+      file: job ? (job.demo ? 'specter-test.js' : this.api.workspace.asRelativePath(job.uri, false)) : '',
       line: job?.kind === 'inspection' ? job.line : null,
       pending: this.queue.length, canSkip: status === 'playing' || status === 'inspecting',
       progress: status === 'playing' && typeof job?.progress === 'number' ? job.progress : null,
@@ -195,16 +195,16 @@ class LiveFollow {
 
   updateStatus() {
     if (this.disposed) return;
-    if (this.demoJob) this.status.text = '$(beaker) Specter: testing';
-    else if (!this.enabled) this.status.text = '$(eye-closed) Specter: paused';
-    else if (!this.api.workspace.workspaceFolders?.length) this.status.text = '$(folder) Open a folder';
-    else if (this.initializing) this.status.text = '$(sync~spin) Specter: starting';
-    else if (this.isWaiting()) this.status.text = '$(debug-pause) Specter: waiting';
-    else if (this.currentJob?.kind === 'inspection') this.status.text = '$(search) Taking a look';
-    else if (this.currentJob) this.status.text = '$(play) Specter: replaying';
+    if (this.demoJob) this.status.text = '$(beaker) specter: testing';
+    else if (!this.enabled) this.status.text = '$(eye-closed) specter: paused';
+    else if (!this.api.workspace.workspaceFolders?.length) this.status.text = '$(folder) open a folder';
+    else if (this.initializing) this.status.text = '$(sync~spin) specter: starting';
+    else if (this.isWaiting()) this.status.text = '$(debug-pause) specter: waiting';
+    else if (this.currentJob?.kind === 'inspection') this.status.text = '$(search) taking a look';
+    else if (this.currentJob) this.status.text = '$(play) specter: replaying';
     else this.status.text = this.config('mode', 'typing') === 'typing'
-      ? '$(keyboard) Specter' : '$(eye) Specter';
-    this.status.tooltip = `Specter: ${this.getState().detail}\nClick for controls.`;
+      ? '$(keyboard) specter' : '$(eye) specter';
+    this.status.tooltip = `specter: ${this.getState().detail}\nclick for controls.`;
     this.status.accessibilityInformation = { label: this.status.tooltip };
     this.stateEmitter.fire();
   }
@@ -327,7 +327,7 @@ class LiveFollow {
     );
     await this.resetWorkspace();
     void this.askFirstUse();
-    this.log('Started. File writes are detected locally in the workspace extension host.');
+    this.log('started. file writes are detected locally in the workspace extension host.');
   }
 
   applyConfiguration() {
@@ -349,7 +349,7 @@ class LiveFollow {
   userActivity(reason = 'editor interaction') {
     if (this.disposed || !this.config('pauseOnInteraction', true)) return;
     if (this.pendingPresentation) this.pendingPresentation.restore = this.navigationEditor();
-    if (this.currentJob && !this.currentJob.cancelled) this.log(`Replay paused for ${reason}.`);
+    if (this.currentJob && !this.currentJob.cancelled) this.log(`replay paused for ${reason}.`);
     this.quietUntil = Date.now() + this.numberConfig('idleDelayMs', 3000, 500, 60000);
     this.cancelCurrent();
     this.clearHighlight();
@@ -433,7 +433,7 @@ class LiveFollow {
         }
       }));
     } catch (error) {
-      this.log(`Could not finish initial scan: ${String(error)}`);
+      this.log(`could not finish initial scan: ${String(error)}`);
     } finally {
       if (!this.disposed && generation === this.generation) {
         this.initializing = false;
@@ -475,7 +475,8 @@ class LiveFollow {
       try {
         const limit = this.numberConfig('maxFileSizeKB', 512, 16, 4096) * 1024;
         const stat = await this.api.workspace.fs.stat(uri);
-        if (!valid() || !(stat.type & this.api.FileType.File) || stat.size > limit) return null;
+        if (!valid() || !(stat.type & this.api.FileType.File) ||
+          (stat.type & this.api.FileType.SymbolicLink) || stat.size > limit) return null;
         const bytes = await this.api.workspace.fs.readFile(uri);
         if (!valid() || bytes.byteLength > limit || bytes.includes(0)) return null;
         return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
@@ -637,7 +638,7 @@ class LiveFollow {
               job.kind = 'inspection';
               job.line = 2;
               job.phase = 'inspect';
-              job.message = 'This sample inspection highlights line 2.';
+              job.message = 'this sample inspection highlights line 2.';
               this.updateStatus();
               await this.showChange(job, { start: 1, end: 2 });
             }
@@ -652,7 +653,7 @@ class LiveFollow {
             await this.showChange(job, hunk);
           }
         } catch (error) {
-          this.log(`Could not show ${this.api.workspace.asRelativePath(job.uri)}: ${String(error)}`);
+          this.log(`could not show ${this.api.workspace.asRelativePath(job.uri)}: ${String(error)}`);
         } finally {
           if (this.demoJob === job) this.demoJob = undefined;
           this.currentJob = undefined;
@@ -759,7 +760,7 @@ class LiveFollow {
       if (!tabs.length || await this.api.window.tabGroups.close(tabs, true)) this.replayContents.delete(key);
     } catch (error) {
       // Retain complete content if VS Code cannot close its tab. A later close frees it.
-      this.log(`Could not close replay preview: ${String(error)}`);
+      this.log(`could not close replay preview: ${String(error)}`);
     } finally {
       this.closingReplayUri = undefined;
     }
@@ -771,7 +772,7 @@ class LiveFollow {
       job.demo ? demo.maxCharacters : this.numberConfig('maxReplayCharacters', 20000, 100, 100000));
     const count = stages.reduce((sum, stage) => sum + stage.typed.length, 0);
     if (!count || stages.some(stage => stage.limited) || this.replayContents.size >= 8) {
-      if (count || stages.some(stage => stage.limited)) this.log('Change exceeds replay limits; showing changed lines directly.');
+      if (count || stages.some(stage => stage.limited)) this.log('change exceeds replay limits; showing changed lines directly.');
       for (const { hunk: changed } of stages.slice(0, 6)) {
         if (!this.valid(job) || job.skip) break;
         await this.showChange(job, changed);
@@ -870,7 +871,7 @@ class LiveFollow {
       const selected = await this.api.window.showQuickPick(this.history.entries.map(entry => ({
         label: this.api.workspace.asRelativePath(entry.uri, true),
         description: new Date(entry.time).toLocaleTimeString(), id: entry.id
-      })), { title: 'Specter: Replay a recent edit' });
+      })), { title: 'specter: replay a recent edit' });
       id = selected?.id;
     }
     const entry = typeof id === 'string' && this.history.get(id);
@@ -883,7 +884,7 @@ class LiveFollow {
     if (this.disposed || this.demoJob) return;
     // The sample uses only virtual documents; it never enters snapshots or history.
     this.demoJob = {
-      uri: this.api.Uri.joinPath(this.context.extensionUri, 'Specter-test.js').with({ scheme: SCHEME }),
+      uri: this.api.Uri.joinPath(this.context.extensionUri, 'specter-test.js').with({ scheme: SCHEME }),
       before: demo.before,
       after: demo.after,
       generation: this.generation, demo: true, historical: true
@@ -908,7 +909,7 @@ class LiveFollow {
     const patterns = Array.isArray(existing) ? existing : [];
     if (!patterns.includes(pattern)) {
       if (patterns.length >= 200) {
-        await this.api.window.showInformationMessage('The ignore list is full. Remove an entry in Specter settings first.');
+        await this.api.window.showInformationMessage('the ignore list is full. remove an entry in specter settings first.');
         return;
       }
       await config.update('excludeGlobs', [...patterns, pattern], this.api.ConfigurationTarget.WorkspaceFolder);
@@ -917,19 +918,19 @@ class LiveFollow {
 
   async chooseMode() {
     const selected = await this.api.window.showQuickPick([
-      { label: 'Typing replay', description: 'Play back each saved edit', value: 'typing' },
-      { label: 'Changed lines', description: 'Go straight to the edit', value: 'follow' }
-    ], { title: 'Specter: Show Edits As', placeHolder: 'Choose how to display edits' });
+      { label: 'typing replay', description: 'play back each saved edit', value: 'typing' },
+      { label: 'changed lines', description: 'go straight to the edit', value: 'follow' }
+    ], { title: 'specter: show edits as', placeHolder: 'choose how to display edits' });
     if (selected) await this.setSetting('mode', selected.value);
   }
 
   async chooseSpeed() {
     const selected = await this.api.window.showQuickPick([
-      { label: 'Slow', description: '60 characters per second', value: 60 },
-      { label: 'Normal', description: '120 characters per second', value: 120 },
-      { label: 'Fast', description: '240 characters per second', value: 240 },
-      { label: 'Very fast', description: '400 characters per second', value: 400 }
-    ], { title: 'Specter: Typing Speed', placeHolder: 'Choose a speed. It updates the current replay too.' });
+      { label: 'slow', description: '60 characters per second', value: 60 },
+      { label: 'normal', description: '120 characters per second', value: 120 },
+      { label: 'fast', description: '240 characters per second', value: 240 },
+      { label: 'very fast', description: '400 characters per second', value: 400 }
+    ], { title: 'specter: typing speed', placeHolder: 'choose a speed. it updates the current replay too.' });
     if (selected) await this.setSetting('typingCharsPerSecond', selected.value);
   }
 

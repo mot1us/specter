@@ -12,6 +12,8 @@ class FollowSidebar {
     this.api = vscode;
     this.context = context;
     this.controller = controller;
+    const version = context.extension?.packageJSON?.version ?? require('../package.json').version;
+    this.version = /^\d+\.\d+\.\d+(?:-[\w.-]+)?$/.test(version) ? version : 'unknown';
     this.disposables = [controller.onDidChangeState(() => this.publish())];
     this.viewDisposables = [];
     this.disposed = false;
@@ -22,14 +24,15 @@ class FollowSidebar {
     if (this.disposed) return;
     this.clearView();
     this.view = view;
+    view.title = `specter v${this.version}`;
     const assets = this.api.Uri.joinPath(this.context.extensionUri, 'assets');
     view.webview.options = { enableScripts: true, localResourceRoots: [assets] };
     this.viewDisposables.push(
       view.webview.onDidReceiveMessage(message => {
         void this.handleMessage(message).catch(error => {
-          this.controller.log(`Sidebar action failed: ${String(error)}`);
+          this.controller.log(`sidebar action failed: ${String(error)}`);
           if (this.view === view) void view.webview.postMessage({
-            type: 'error', message: 'Could not update the controls. Check the logs.'
+            type: 'error', message: 'could not update the controls. check the logs.'
           });
         });
       }),
@@ -107,58 +110,52 @@ class FollowSidebar {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
   <link rel="stylesheet" href="${css}">
-  <title>Specter Controls</title>
+  <title>specter v${this.version}</title>
 </head>
 <body>
   <main>
     <header class="intro">
-      <span class="eyebrow">BETA</span>
-      <h1>Specter</h1>
-      <p>Replays your agent's saved edits as typing.</p>
+      <h1>specter <span class="version">v${this.version}</span></h1>
+      <span class="beta">beta</span>
     </header>
 
     <section class="status-card" aria-labelledby="status-title" data-status="preparing">
-      <div class="status-heading"><span class="status-dot" aria-hidden="true"></span><h2 id="status-title" role="status">Starting…</h2></div>
-      <p id="status-detail">Getting ready.</p>
+      <div class="status-heading"><span class="status-dot" aria-hidden="true"></span><h2 id="status-title" role="status">starting…</h2></div>
+      <p id="status-detail">getting ready.</p>
       <p id="current-file" class="file" hidden></p>
-      <progress id="progress" max="100" value="0" aria-label="Typing replay progress" hidden></progress>
-      <div class="queue-row"><span id="queue">Nothing queued</span><button id="skip" class="text-button" disabled>Skip current</button></div>
+      <progress id="progress" max="100" value="0" aria-label="typing replay progress" hidden></progress>
+      <div class="queue-row"><span id="queue">nothing queued</span><button id="skip" class="text-button" disabled>skip</button></div>
       <p id="skipped" class="hint skipped" aria-live="polite"></p>
     </section>
 
-    <section class="demo" aria-label="Test Specter">
-      <button id="test" class="secondary-button" disabled>Test Specter</button>
-      <p class="hint">30 seconds of typing, then a 5-second line inspection. Try the speed slider or Skip current. Works while paused.</p>
+    <section class="controls" aria-label="playback controls">
+      <div class="toggle-row"><label for="enabled" class="control-label">replay saved edits</label><input id="enabled" type="checkbox" role="switch" disabled></div>
+      <div class="field"><label class="control-label" for="mode">display</label><select id="mode" disabled><option value="typing">typing</option><option value="follow">changed lines</option></select></div>
+      <div class="field"><label class="control-label" for="replayPane">pane</label><select id="replayPane" disabled><option value="current">current</option><option value="beside">beside my code</option></select></div>
+      <div class="field speed-field"><div class="label-row"><label class="control-label" for="speed">speed</label><output id="speed-value" for="speed">120 chars/s</output></div><input id="speed" type="range" min="20" max="400" step="1" value="120" aria-describedby="speed-hint" disabled><p id="speed-hint" class="hint">updates during replay</p></div>
+      <button id="test" class="secondary-button" title="30 seconds of typing, then a 5-second inspection. works while paused." disabled>test specter</button>
     </section>
 
-    <section class="controls" aria-label="Playback controls">
-      <div class="toggle-row"><div><label for="enabled" class="control-label">Replay edits</label><p>Turn off to pause.</p></div><input id="enabled" type="checkbox" role="switch" disabled></div>
-      <div class="field"><label class="control-label" for="mode">Show edits as</label><select id="mode" disabled><option value="typing">Typing replay</option><option value="follow">Changed lines</option></select></div>
-      <div class="field"><label class="control-label" for="replayPane">Open edits in</label><select id="replayPane" disabled><option value="current">Current pane</option><option value="beside">Separate pane</option></select></div>
-      <div class="field"><div class="label-row"><label class="control-label" for="speed">Typing speed</label><output id="speed-value" for="speed">120 chars/s</output></div><input id="speed" type="range" min="20" max="400" step="1" value="120" disabled><div class="scale"><span>Slow</span><span>Fast</span></div><p class="hint">Speed updates right away. Long replays finish at the time limit.</p></div>
-    </section>
-
-    <section class="preferences" aria-labelledby="preferences-title">
-      <h2 id="preferences-title">While you work</h2>
-      <label class="check-row"><input id="pauseOnInteraction" type="checkbox" disabled><span>Pause while I edit</span></label>
-      <label class="check-row"><input id="pauseWhenUnfocused" type="checkbox" disabled><span>Wait while VS Code is in the background</span></label>
-      <label class="check-row"><input id="ignoreEditorSaves" type="checkbox" disabled><span>Skip my saves in this window</span></label>
-      <label class="check-row"><input id="suspendWhenPaused" type="checkbox" disabled><span>Stop watching files when paused</span></label>
-    </section>
+    <details class="preferences">
+      <summary id="preferences-title">preferences</summary>
+      <label class="check-row"><input id="pauseOnInteraction" type="checkbox" disabled><span>pause while i edit</span></label>
+      <label class="check-row"><input id="pauseWhenUnfocused" type="checkbox" disabled><span>wait while this window is in the background</span></label>
+      <label class="check-row"><input id="ignoreEditorSaves" type="checkbox" disabled><span>skip my saves</span></label>
+      <label class="check-row"><input id="suspendWhenPaused" type="checkbox" disabled><span>stop watching when paused</span></label>
+    </details>
 
     <p id="error" role="alert" hidden></p>
     <section class="recent" aria-labelledby="recent-title">
-      <div class="label-row"><h2 id="recent-title">Recent edits</h2><button id="clear" class="text-button" disabled>Clear</button></div>
-      <p class="hint">Missed one? Replay it here. Previews don't change your files.</p>
-      <p id="recent-empty" class="hint">Nothing yet.</p>
-      <ul id="recent-list" aria-label="Recent saved edits"></ul>
+      <div class="label-row"><h2 id="recent-title">recent edits</h2><button id="clear" class="text-button" disabled>clear</button></div>
+      <p id="recent-empty" class="hint">nothing yet</p>
+      <ul id="recent-list" aria-label="recent saved edits"></ul>
     </section>
-    <section class="inspections" aria-labelledby="inspection-title">
-      <h2 id="inspection-title">Inspections</h2>
-      <p class="hint">Show the lines your agent checks while fixing a bug. Needs project instructions.</p>
-      <button id="setup" class="secondary-button">Set up inspections</button>
-    </section>
-    <footer><button id="settings" class="secondary-button">Settings</button><button id="output" class="text-button">Logs</button><p id="settings-scope">Saved for this project.</p></footer>
+    <details class="inspections">
+      <summary id="inspection-title">agent inspections</summary>
+      <p class="hint">see the lines your agent checks. adds a helper and project instructions after review.</p>
+      <button id="setup" class="secondary-button">set up inspections</button>
+    </details>
+    <footer><div class="footer-actions"><button id="settings" class="text-button">settings</button><button id="output" class="text-button">logs</button></div><p id="settings-scope">saved for this project</p></footer>
   </main>
   <script nonce="${nonce}" src="${script}"></script>
 </body>

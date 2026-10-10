@@ -1,4 +1,4 @@
-name: Check and package
+name: check and package
 
 on:
   push:
@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   test:
-    name: Tests (${{ matrix.os }}, Node ${{ matrix.node }})
+    name: tests (${{ matrix.os }}, node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     strategy:
@@ -39,7 +39,7 @@ jobs:
       - run: npm run package:check
 
   integration:
-    name: VS Code ${{ matrix.vscode }} (${{ matrix.os }})
+    name: vs code ${{ matrix.vscode }} (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
@@ -67,7 +67,7 @@ jobs:
         if: runner.os != 'Linux'
 
   package:
-    name: Installable VSIX
+    name: installable vsix
     needs: [test, integration]
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -81,18 +81,18 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run package
-      - name: Install and exercise the exact VSIX in a fresh profile
+      - name: install and exercise the exact vsix in a fresh profile
         run: xvfb-run -a npm run test:packaged
         env:
           SPECTER_PROFILE_DIR: ${{ runner.temp }}/specter-profile
-      - name: Keep packaged-extension CPU profiles and memory measurements
+      - name: keep packaged-extension cpu profiles and memory measurements
         uses: actions/upload-artifact@v7
         with:
           name: specter-performance
           path: ${{ runner.temp }}/specter-profile
           if-no-files-found: error
           retention-days: 14
-      - name: Verify installable archive and checksum
+      - name: verify installable archive and checksum
         working-directory: dist
         run: |
           unzip -t ./*.vsix
@@ -110,7 +110,7 @@ jobs:
           retention-days: 14
 
   release:
-    name: GitHub beta release
+    name: github beta release
     needs: package
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'mot1us/specter'
     runs-on: ubuntu-latest
@@ -125,12 +125,16 @@ jobs:
         with:
           name: specter-vsix
           path: dist
-      - name: Verify artifacts
+      - name: verify artifacts
         working-directory: dist
         run: |
           unzip -t ./*.vsix
           sha256sum --check ./*.sha256
-      - name: Publish the tested GitHub beta for this version
+      - name: lowercase release titles and prose
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/lowercase-releases.js
+      - name: publish the tested github beta for this version
         env:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/release-beta.js

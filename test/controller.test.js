@@ -943,10 +943,10 @@ for (const [empty, speed] of [[false, 400], [true, 20]]) test(`Test Specter runs
   for (let elapsed = 0; controller.getState().status !== 'inspecting' && elapsed < 1500; elapsed += 50) {
     await advance(50);
   }
-  assert.equal(controller.getState().title, 'Testing a line inspection');
+  assert.equal(controller.getState().title, 'testing a line inspection');
   assert.equal(controller.getState().line, 2);
   assert.equal(mock.shown.at(-1).editor.revealed.start.line, 1);
-  assert.ok(mock.frames.some(frame => frame.text.includes('Specter is working')));
+  assert.ok(mock.frames.some(frame => frame.text.includes('specter is working')));
   assert.ok(mock.shown.every(item => item.document.uri.scheme === 'codex-live-follow'));
   await advance(4999);
   assert.equal(controller.getState().status, 'inspecting', 'sample inspection stays visible for five seconds');

@@ -6,8 +6,9 @@ const { LiveFollow } = require('../src/controller');
 const { VIEW_ID } = require('../src/sidebar');
 const { createVscodeMock, until } = require('./helpers/vscode');
 
-async function setup(t) {
+async function setup(t, version) {
   const mock = createVscodeMock();
+  if (version !== undefined) mock.context.extension = { packageJSON: { version } };
   const controller = new LiveFollow(mock.vscode, mock.context);
   t.after(() => { controller.dispose(); mock.dispose(); });
   await controller.start();
@@ -32,6 +33,21 @@ async function setup(t) {
   await sidebar.handleMessage({ type: 'ready' });
   return { mock, controller, sidebar, view, messages, visibility, disposed };
 }
+
+test('the sidebar title and heading use the installed manifest version', async t => {
+  const { view } = await setup(t, '1.2.3-beta.4');
+  assert.equal(view.title, 'specter v1.2.3-beta.4');
+  assert.match(view.webview.html, /<h1>specter <span class="version">v1\.2\.3-beta\.4<\/span>/);
+  assert.match(view.webview.html, /<details class="preferences">/);
+  assert.match(view.webview.html, /<details class="inspections">/);
+  assert.match(view.webview.html, /script-src 'nonce-[^']+'/);
+});
+
+test('invalid version metadata cannot insert markup into the sidebar', async t => {
+  const { view } = await setup(t, '<script>bad()</script>');
+  assert.equal(view.title, 'specter vunknown');
+  assert.ok(!view.webview.html.includes('bad()'));
+});
 
 test('sidebar controls persist settings and stay in sync with commands and Settings', async t => {
   const { mock, sidebar, messages } = await setup(t);
@@ -139,7 +155,7 @@ test('status bar and Open Controls use the contributed sidebar without a Quick P
 test('the Test Specter sidebar action starts a demo while replay stays paused', async t => {
   const { mock, controller, sidebar, messages, view } = await setup(t);
   await mock.configure('enabled', false);
-  assert.match(view.webview.html, /id="test"[^>]*>Test Specter/);
+  assert.match(view.webview.html, /id="test"[^>]*>test specter/);
   await sidebar.handleMessage({ type: 'action', action: 'test' });
   assert.equal(controller.enabled, false);
   assert.equal(messages.at(-1).state.testing, true);

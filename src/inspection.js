@@ -55,7 +55,8 @@ class InspectionFeed {
   async read(uri, folder, key, revision, generation) {
     try {
       const stat = await this.api.workspace.fs.stat(uri);
-      if (!(stat.type & this.api.FileType.File) || stat.size > MAX_BYTES) return;
+      if (!(stat.type & this.api.FileType.File) ||
+        (stat.type & this.api.FileType.SymbolicLink) || stat.size > MAX_BYTES) return;
       const bytes = await this.api.workspace.fs.readFile(uri);
       if (bytes.byteLength > MAX_BYTES || this.revisions.get(key) !== revision) return;
       const event = parseInspection(new TextDecoder('utf-8', { fatal: true }).decode(bytes));

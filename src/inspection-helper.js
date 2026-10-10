@@ -12,14 +12,19 @@ const validPath = typeof file === 'string' && file.length > 0 && file.length <= 
   !/[\\:\x00-\x1f]/.test(file) && !file.split('/').some(part => !part || part === '.' || part === '..');
 if (!validPath || !Number.isSafeInteger(event.line) || event.line < 1 ||
   typeof message !== 'string' || message.length > 500 || !['inspect', 'suspect'].includes(phase)) {
-  console.error('Usage: node scripts/inspect-line.js <relative-file> <line> "What is being checked" [inspect|suspect]');
+  console.error('usage: node scripts/inspect-line.js <relative-file> <line> "what is being checked" [inspect|suspect]');
   process.exitCode = 1;
 } else {
   try {
     const target = path.resolve(process.cwd(), event.path);
-    if (!fs.statSync(target).isFile()) throw new Error('The target must be a file.');
+    if (!fs.statSync(target).isFile()) throw new Error('the target must be a file.');
     const destination = path.resolve(process.cwd(), ACTIVITY_PATH);
-    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    const directory = path.dirname(destination);
+    fs.mkdirSync(directory, { recursive: true });
+    const directoryStat = fs.lstatSync(directory);
+    if (!directoryStat.isDirectory() || directoryStat.isSymbolicLink()) {
+      throw new Error('the activity path must be a regular folder.');
+    }
     const temporary = `${destination}.${event.id}.tmp`;
     try {
       fs.writeFileSync(temporary, JSON.stringify(event), { flag: 'wx', mode: 0o600 });
@@ -27,7 +32,7 @@ if (!validPath || !Number.isSafeInteger(event.line) || event.line < 1 ||
     } finally {
       fs.rmSync(temporary, { force: true });
     }
-    console.log(`Inspecting ${event.path}:${event.line}`);
+    console.log(`inspecting ${event.path}:${event.line}`);
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

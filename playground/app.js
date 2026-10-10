@@ -32,9 +32,9 @@ function persist() {
     storageAvailable = true;
   } catch {
     storageAvailable = false;
-    announce('Your browser could not save this board. Changes last until refresh.');
+    announce('your browser could not save this board. changes last until refresh.');
   }
-  $('#save-status').textContent = storageAvailable ? 'Saved on this device' : 'Changes kept for this visit';
+  $('#save-status').textContent = storageAvailable ? 'saved on this device' : 'changes kept for this visit';
 }
 
 function announce(message) {
@@ -63,7 +63,7 @@ function taskRow(task) {
   check.type = 'button';
   check.className = 'task-check';
   check.dataset.action = 'toggle';
-  check.setAttribute('aria-label', `Mark “${task.title}” ${task.done ? 'incomplete' : 'complete'}`);
+  check.setAttribute('aria-label', `mark “${task.title}” ${task.done ? 'incomplete' : 'complete'}`);
   check.setAttribute('aria-pressed', String(task.done));
   check.append(icon('check'));
 
@@ -82,7 +82,7 @@ function taskRow(task) {
   if (task.featured && !task.done) {
     const featured = document.createElement('span');
     featured.className = 'featured-label';
-    featured.textContent = '✳ A GOOD PLACE TO START';
+    featured.textContent = '✳ a good place to start';
     meta.append(featured);
   }
   content.append(title, meta);
@@ -91,7 +91,7 @@ function taskRow(task) {
   remove.type = 'button';
   remove.className = 'delete-task';
   remove.dataset.action = 'delete';
-  remove.setAttribute('aria-label', `Delete “${task.title}”`);
+  remove.setAttribute('aria-label', `delete “${task.title}”`);
   remove.append(icon('trash'));
   row.append(check, content, remove);
   return row;
@@ -116,19 +116,19 @@ function render() {
   $('#progress-percent').textContent = `${percent}%`;
   $('#progress-fill').style.width = `${percent}%`;
   $('#progress-bar').setAttribute('aria-valuenow', String(percent));
-  $('#progress-caption').textContent = tasks.length && !remaining ? 'Look at that. You did the little things.' : 'Every little checkmark counts.';
+  $('#progress-caption').textContent = tasks.length && !remaining ? 'look at that. you did the little things.' : 'every little checkmark counts.';
   document.querySelectorAll('[data-filter]').forEach(button => {
     button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
   });
 
   $('#empty-state').hidden = visible.length > 0;
   const empty = search
-    ? ['No little things found.', 'Try a different word or clear your search.']
+    ? ['no little things found.', 'try a different word or clear your search.']
     : filter === 'done'
-      ? ['Your first little win is waiting.', 'Check off a task and it will show up here.']
+      ? ['your first little win is waiting.', 'check off a task and it will show up here.']
       : filter === 'open' && tasks.length
-        ? ['All done. Take a little breather.', 'You’ve earned it. Add something new when you’re ready.']
-        : ['Room for something good.', 'Add your first task. Keep it small.'];
+        ? ['all done. take a little breather.', 'you’ve earned it. add something new when you’re ready.']
+        : ['room for something good.', 'add your first task. keep it small.'];
   $('#empty-title').textContent = empty[0];
   $('#empty-copy').textContent = empty[1];
 }
@@ -153,7 +153,7 @@ $('#task-form').addEventListener('submit', event => {
   const form = new FormData(event.currentTarget);
   const title = String(form.get('title')).trim();
   if (!title) {
-    $('#task-title').setCustomValidity('Give your task a name first.');
+    $('#task-title').setCustomValidity('give your task a name first.');
     $('#task-title').reportValidity();
     return;
   }
@@ -164,7 +164,7 @@ $('#task-form').addEventListener('submit', event => {
   persist();
   closeComposer();
   render();
-  if (storageAvailable) announce('One small step, added.');
+  if (storageAvailable) announce('one small step, added.');
 });
 
 $('#task-list').addEventListener('click', event => {
@@ -185,7 +185,7 @@ $('#task-list').addEventListener('click', event => {
   const focusRow = [...$('#task-list').children].find(item => item.dataset.id === focusId)
     || [...$('#task-list').children].find(item => item.dataset.id === nextId);
   (focusRow?.querySelector('.task-check') || $('#new-task')).focus({ preventScroll: true });
-  if (storageAvailable) announce(button.dataset.action === 'delete' ? 'Task removed. A little less on your plate.' : task.done ? 'A little win. Nice work!' : 'Back on the list. No rush.');
+  if (storageAvailable) announce(button.dataset.action === 'delete' ? 'task removed. a little less on your plate.' : task.done ? 'a little win. nice work!' : 'back on the list. no rush.');
 });
 
 document.querySelectorAll('[data-filter]').forEach(button => {
@@ -198,7 +198,7 @@ $('#search').addEventListener('input', event => {
 
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  $('#theme-toggle').setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`);
+  $('#theme-toggle').setAttribute('aria-label', `switch to ${theme === 'dark' ? 'light' : 'dark'} theme`);
   $('#theme-toggle').setAttribute('aria-pressed', String(theme === 'dark'));
   $('meta[name="theme-color"]').content = theme === 'dark' ? '#1c2622' : '#faf9f6';
 }
@@ -210,7 +210,7 @@ $('#theme-toggle').addEventListener('click', () => {
 });
 
 $('#reset-demo').addEventListener('click', () => {
-  if (!confirm('Replace your current tasks with the sample board?')) return;
+  if (!confirm('replace your current tasks with the sample board?')) return;
   tasks = freshTasks();
   filter = 'all';
   search = '';
@@ -218,7 +218,7 @@ $('#reset-demo').addEventListener('click', () => {
   closeComposer();
   persist();
   render();
-  if (storageAvailable) announce('A fresh start. Sample board restored.');
+  if (storageAvailable) announce('a fresh start. sample board restored.');
 });
 $('#test-guide').addEventListener('click', () => $('#guide-dialog').showModal());
 $('#guide-dialog').addEventListener('click', event => {
@@ -228,8 +228,8 @@ $('#guide-dialog').addEventListener('click', event => {
 
 function updateDate() {
   const now = new Date();
-  $('#weekday').textContent = now.toLocaleDateString(undefined, { weekday: 'long' }).toUpperCase();
-  $('#date-label').textContent = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  $('#weekday').textContent = now.toLocaleDateString(undefined, { weekday: 'long' }).toLowerCase();
+  $('#date-label').textContent = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }).toLowerCase();
 }
 updateDate();
 setInterval(updateDate, 60_000);

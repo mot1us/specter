@@ -1,8 +1,8 @@
 {
   "name": "codex-live-follow",
-  "displayName": "Specter",
-  "description": "Replays saved file changes as typing in VS Code. Runs locally, with no AI or network connection.",
-  "version": "0.9.5",
+  "displayName": "specter",
+  "description": "replays saved file changes as typing in vs code. runs locally, with no ai or network connection.",
+  "version": "0.9.6",
   "publisher": "mot1us",
   "license": "MIT",
   "engines": {
@@ -38,88 +38,88 @@
     "commands": [
       {
         "command": "codexLiveFollow.toggle",
-        "title": "Toggle Replay",
-        "category": "Specter"
+        "title": "toggle replay",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.pause",
-        "title": "Pause Replay",
-        "category": "Specter"
+        "title": "pause replay",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.resume",
-        "title": "Resume Replay",
-        "category": "Specter"
+        "title": "resume replay",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.controls",
-        "title": "Open Controls",
-        "category": "Specter"
+        "title": "open controls",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.setSpeed",
-        "title": "Choose Typing Speed",
-        "category": "Specter"
+        "title": "choose typing speed",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.setMode",
-        "title": "Choose Edit Display",
-        "category": "Specter"
+        "title": "choose edit display",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.skipReplay",
-        "title": "Skip Current Replay",
-        "category": "Specter"
+        "title": "skip current replay",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.showOutput",
-        "title": "Show Logs",
-        "category": "Specter"
+        "title": "show logs",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.openSidebar",
-        "title": "Open Specter Sidebar",
-        "category": "Specter"
+        "title": "open specter sidebar",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.settings",
-        "title": "Extension Settings",
-        "category": "Specter",
+        "title": "extension settings",
+        "category": "specter",
         "icon": "$(settings-gear)"
       },
       {
         "command": "codexLiveFollow.replayRecent",
-        "title": "Replay a Recent Edit",
-        "category": "Specter"
+        "title": "replay a recent edit",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.clearRecent",
-        "title": "Clear Recent Edits",
-        "category": "Specter"
+        "title": "clear recent edits",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.ignore",
-        "title": "Ignore in Specter",
-        "category": "Specter"
+        "title": "ignore in specter",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.setupInspection",
-        "title": "Set Up Inspections",
-        "category": "Specter"
+        "title": "set up inspections",
+        "category": "specter"
       },
       {
         "command": "codexLiveFollow.testSpecter",
-        "title": "Test Specter",
-        "category": "Specter"
+        "title": "test specter",
+        "category": "specter"
       }
     ],
     "configuration": {
-      "title": "Specter",
+      "title": "specter",
       "properties": {
         "codexLiveFollow.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Show saved file changes in this project. Pause and resume in the Specter sidebar."
+          "description": "show saved file changes in this project. pause and resume in the specter sidebar."
         },
         "codexLiveFollow.mode": {
           "type": "string",
@@ -128,83 +128,83 @@
             "follow"
           ],
           "default": "typing",
-          "description": "Play back saved edits as typing, or go straight to changed lines. The typing preview is read-only."
+          "description": "play back saved edits as typing, or go straight to changed lines. the typing preview is read-only."
         },
         "codexLiveFollow.typingCharsPerSecond": {
           "type": "number",
           "default": 120,
           "minimum": 20,
           "maximum": 400,
-          "description": "Typing replay speed, in characters per second. Changes affect the current replay immediately."
+          "description": "typing replay speed, in characters per second. changes affect the current replay immediately."
         },
         "codexLiveFollow.maxReplayCharacters": {
           "type": "number",
           "default": 20000,
           "minimum": 100,
           "maximum": 100000,
-          "description": "Skip typing for changes above this size. Smaller changes still follow the replay time limit."
+          "description": "skip typing for changes above this size. smaller changes still follow the replay time limit."
         },
         "codexLiveFollow.maxReplayDurationMs": {
           "type": "number",
           "default": 12000,
           "minimum": 1000,
           "maximum": 60000,
-          "description": "Time limit for each typing replay, in milliseconds. At the limit, show the complete saved file without increasing the selected speed."
+          "description": "time limit for each typing replay, in milliseconds. at the limit, show the complete saved file without increasing the selected speed."
         },
         "codexLiveFollow.highlightDurationMs": {
           "type": "number",
           "default": 1400,
           "minimum": 250,
           "maximum": 10000,
-          "description": "How long changed lines stay highlighted, in milliseconds."
+          "description": "how long changed lines stay highlighted, in milliseconds."
         },
         "codexLiveFollow.minimumDisplayMs": {
           "type": "number",
           "default": 450,
           "minimum": 100,
           "maximum": 5000,
-          "description": "How long to show each changed block before moving on, in milliseconds."
+          "description": "how long to show each changed block before moving on, in milliseconds."
         },
         "codexLiveFollow.inspectionDisplayMs": {
           "type": "number",
           "default": 1500,
           "minimum": 300,
           "maximum": 10000,
-          "description": "How long to stay on a line reported by your agent, in milliseconds."
+          "description": "how long to stay on a line reported by your agent, in milliseconds."
         },
         "codexLiveFollow.maxFileSizeKB": {
           "type": "number",
           "default": 512,
           "minimum": 16,
           "maximum": 4096,
-          "description": "Skip files larger than this size, in KB."
+          "description": "skip files larger than this size, in kb."
         },
         "codexLiveFollow.pauseOnInteraction": {
           "type": "boolean",
           "default": true,
-          "description": "Pause while you type, click, or switch files."
+          "description": "pause while you type, click, or switch files."
         },
         "codexLiveFollow.suspendWhenPaused": {
           "type": "boolean",
           "default": true,
-          "description": "Stop file watching and release source baselines when replay is paused. Resume scans the current files without replaying edits made while paused. Turn off to keep baselines updated during pause."
+          "description": "stop file watching and release source baselines when replay is paused. resume scans the current files without replaying edits made while paused. turn off to keep baselines updated during pause."
         },
         "codexLiveFollow.idleDelayMs": {
           "type": "number",
           "default": 3000,
           "minimum": 500,
           "maximum": 60000,
-          "description": "Resume after this many milliseconds without editor activity."
+          "description": "resume after this many milliseconds without editor activity."
         },
         "codexLiveFollow.pauseWhenUnfocused": {
           "type": "boolean",
           "default": true,
-          "description": "Wait while VS Code is in the background."
+          "description": "wait while vs code is in the background."
         },
         "codexLiveFollow.ignoreEditorSaves": {
           "type": "boolean",
           "default": true,
-          "description": "Skip saves made in this VS Code window. Follow edits saved by other tools."
+          "description": "skip saves made in this vs code window. follow edits saved by other tools."
         },
         "codexLiveFollow.excludeDirectories": {
           "type": "array",
@@ -213,7 +213,7 @@
             "minLength": 1
           },
           "default": [],
-          "description": "Extra folder names to skip. Dependency and build folders are already skipped."
+          "description": "extra folder names to skip. dependency and build folders are already skipped."
         },
         "codexLiveFollow.replayPane": {
           "type": "string",
@@ -222,11 +222,11 @@
             "beside"
           ],
           "enumDescriptions": [
-            "Use the current editor group.",
-            "Keep replay in a separate editor group beside your code."
+            "use the current editor group.",
+            "keep replay in a separate editor group beside your code."
           ],
           "default": "current",
-          "description": "Where replay opens. The separate pane is reused until you close it."
+          "description": "where replay opens. the separate pane is reused until you close it."
         },
         "codexLiveFollow.excludeGlobs": {
           "type": "array",
@@ -238,7 +238,7 @@
           "maxItems": 200,
           "default": [],
           "scope": "resource",
-          "description": "Paths to skip, relative to each project root. Use * and ? within a folder, or ** across folders. Examples: **/*.map, generated/**. Right-click a file or folder to add it."
+          "description": "paths to skip, relative to each project root. use * and ? within a folder, or ** across folders. examples: **/*.map, generated/**. right-click a file or folder to add it."
         }
       }
     },
@@ -246,7 +246,7 @@
       "activitybar": [
         {
           "id": "codexLiveFollow",
-          "title": "Specter",
+          "title": "specter",
           "icon": "assets/sidebar.svg"
         }
       ]
@@ -256,7 +256,7 @@
         {
           "type": "webview",
           "id": "codexLiveFollow.sidebar",
-          "name": "Controls"
+          "name": "specter"
         }
       ]
     },
@@ -294,7 +294,7 @@
     },
     "virtualWorkspaces": {
       "supported": false,
-      "description": "Requires a workspace extension host with file watching support."
+      "description": "requires a workspace extension host with file watching support."
     }
   },
   "icon": "assets/icon.png",

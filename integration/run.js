@@ -42,7 +42,7 @@ async function run() {
   const demoFiles = await fs.readdir(root);
   const demoFrames = [];
   const demoSubscription = vscode.workspace.onDidChangeTextDocument(event => {
-    if (event.document.uri.scheme === 'codex-live-follow' && event.document.uri.path.endsWith('/Specter-test.js')) {
+    if (event.document.uri.scheme === 'codex-live-follow' && event.document.uri.path.endsWith('/specter-test.js')) {
       demoFrames.push(event.document.getText().replace(/\r\n/g, '\n'));
     }
   });
@@ -52,15 +52,15 @@ async function run() {
     assert.equal(api.getState().testing, true);
     const sampleInspectionVisible = () => vscode.window.visibleTextEditors.some(editor =>
       editor.document.uri.scheme === 'codex-live-follow' &&
-      editor.document.uri.path.endsWith('/Specter-test.js') &&
+      editor.document.uri.path.endsWith('/specter-test.js') &&
       editor.document.uri.query.startsWith('history=') &&
-      editor.document.getText().includes('Specter is working'));
+      editor.document.getText().includes('specter is working'));
     await until(() => api.getState().status === 'inspecting' && api.getState().line === 2 && sampleInspectionVisible(),
       '30-second sample typing finishes and a line-2 inspection is displayed', 45000);
     assert.ok(Date.now() - demoStarted >= 30000, 'demo must not finish at the normal one-second replay limit');
     assert.ok(demoFrames.some(frame => frame.includes('"S') && !frame.includes('console.log(item.label);')),
       `sample generates partial typing frames even while paused; observed ${JSON.stringify(demoFrames)}`);
-    assert.ok(demoFrames.some(frame => frame.includes('Specter is working')));
+    assert.ok(demoFrames.some(frame => frame.includes('specter is working')));
     await vscode.commands.executeCommand('codexLiveFollow.skipReplay');
     await until(() => !api.getState().testing && !vscode.window.tabGroups.all.some(group =>
       group.tabs.some(tab => tab.input?.uri?.scheme === 'codex-live-follow')), 'sample tabs close after Skip');

@@ -1,60 +1,35 @@
-## Specter beta
+## specter 0.9.6 beta
 
-Specter runs locally. No AI, no network connection. It simply watches your
-project's files for saves and replays the changes as if they're being typed.
+saved file changes, replayed as typing. runs locally, with no ai calls or telemetry.
 
-This is a fun exercise to see what your agent is up to in the background
-when you ask it to update your project. I built it for Codex, but it should
-work with other agents too, since it's just watching for file changes.
+### this update
 
-This is beta for now! Let me know if you find any issues.
+- installed version beside the sidebar title and in the view heading.
+- minimal sidebar with square controls, a pixel-inspired icon, and fewer explanations.
+- preferences and optional agent inspections collapse out of the way.
+- lowercase visible text, documentation, and github release descriptions.
+- shorter readme.
+- saved-file and report reads reject file symlinks; the helper refuses a linked activity folder.
 
-### This update
+### install
 
-- Pause stops file watching and releases source baselines by default. Resume
-  reads the current files without replaying edits made while paused. Recent edits
-  remain available. Turn off **Stop watching files when paused** to retain the old behavior.
-- File bursts use one timer with bounded storage before entering the read queue.
-- Oversized editor saves no longer read or hash the full model. Startup exclusions
-  apply before the file limit, and folder deletions clear queued child edits.
-- The 30-second demo's speed slider also works in Changed lines mode.
-- Removed the unused replay helper and icon asset. Added regression coverage and
-  CPU profiles from the packaged extension's disposable CI host.
+1. download the `.vsix` below.
+2. in vs code: **extensions → … → install from vsix…**
+3. open a local project and choose **enable for this project**.
 
-### Install
+requires desktop vs code 1.96 or newer on macos, windows, or linux.
+open **specter** in the activity bar; **test specter** works while paused.
+reload an existing window after updating to activate the new version.
 
-1. Download the `.vsix` below.
-2. In VS Code: Extensions → … → Install from VSIX…
-3. Open a local project and choose Enable for this project.
+replay uses read-only previews. source files and unsaved edits are preserved.
+optional inspection setup writes a helper and project instructions after review.
+recent edits stay in memory, capped at 20 entries or 4 mb.
 
-Open Specter in the activity bar for controls. Needs desktop VS Code 1.96
-or newer. This beta supports local folders on macOS, Windows, and Linux.
-Remote workspaces and other editors haven't been checked for this beta.
+updates are manual beta vsix installs. disable the old `local.codex-live-follow`
+prototype first. the `mot1us.codex-live-follow` identity and `codexLiveFollow`
+settings are preserved. marketplace registration is pending.
 
-### A few details
+[report a bug](https://github.com/mot1us/specter/issues) ·
+[security and privacy](https://github.com/mot1us/specter/blob/main/SECURITY.md)
 
-Typing plays back after a save. The extension doesn't write to your source files
-or replace unsaved edits. Other tools that save files can trigger it too.
-
-The extension runs locally. No AI calls, network requests, telemetry, or API key.
-Codex and VS Code handle their own connections.
-
-To see which lines your agent is checking, click **Set up inspections** in the
-sidebar, or download `inspect-line.js` and `inspection-setup.md` below. The agent has to report those locations; Specter
-can't see them on its own. The helper needs Node.js 18 or newer.
-Saved edit replay works without this setup. Recent edits hold up to 20 edits or
-4 MB in memory; clearing, reloading, or rescanning removes them.
-
-### Updates
-
-Install newer beta VSIX files manually. Remove or disable the old
-`local.codex-live-follow` build first. Your `codexLiveFollow` settings still work.
-
-Specter keeps the `mot1us.codex-live-follow` ID so this installs over the existing
-beta. Marketplace publisher registration is pending.
-The SHA-256 files check download integrity; they're not Marketplace signatures.
-
-[Report a bug](https://github.com/mot1us/specter/issues) or
-[try the beta checklist](https://github.com/mot1us/specter/blob/main/docs/beta-testing.md).
-
-Free. Open source. MIT licensed. Unofficial; not affiliated with OpenAI.
+free, open source, mit licensed. unofficial; not affiliated with openai.

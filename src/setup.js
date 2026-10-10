@@ -6,17 +6,17 @@ const path = require('node:path');
 const HELPER = '.specter/inspect-line.cjs';
 const MARKER = '<!-- specter:inspection -->';
 const NOTE = `${MARKER}
-## Specter inspections
+## specter inspections
 
-During bug investigation, report meaningful file locations so Specter can show
-the inspection in VS Code. From this project root, run:
+during bug investigation, report meaningful file locations so specter can show
+the inspection in vs code. from this project root, run:
 
 \`\`\`sh
-node ${HELPER} <relative-file> <one-based-line> "What is being checked" [inspect|suspect]
+node ${HELPER} <relative-file> <one-based-line> "what is being checked" [inspect|suspect]
 \`\`\`
 
-Use a real file and line being inspected. Use \`suspect\` only when evidence points
-to a possible cause. Continue investigating and fixing normally. This reports
+use a real file and line being inspected. use \`suspect\` only when evidence points
+to a possible cause. continue investigating and fixing normally. this reports
 local viewer activity; it does not edit source code or use the network.
 <!-- /specter:inspection -->
 `;
@@ -24,8 +24,8 @@ local viewer activity; it does not edit source code or use the network.
 async function readRegular(file) {
   try {
     const stat = await fs.lstat(file);
-    if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`Use a regular file: ${file}`);
-    if (stat.size > 1024 * 1024) throw new Error(`File is too large to update: ${file}`);
+    if (!stat.isFile() || stat.isSymbolicLink()) throw new Error(`use a regular file: ${file}`);
+    if (stat.size > 1024 * 1024) throw new Error(`file is too large to update: ${file}`);
     return await fs.readFile(file, 'utf8');
   } catch (error) {
     if (error.code === 'ENOENT') return undefined;
@@ -43,7 +43,7 @@ async function prepareSetup(root, helper) {
   const files = ['AGENTS.md', '.gitignore', HELPER];
   const contents = await Promise.all(files.map(file => readRegular(path.join(root, file))));
   if (contents[2] !== undefined && contents[2] !== helper) {
-    throw new Error(`An existing ${HELPER} is different. It has been left alone.`);
+    throw new Error(`an existing ${HELPER} is different. it has been left alone.`);
   }
   const agents = contents[0] ?? '';
   const ignore = contents[1] ?? '';
@@ -63,7 +63,7 @@ async function applySetup(root, changes) {
   await prepareDirectory(root);
   for (const change of changes) {
     if (await readRegular(path.join(root, change.file)) !== change.before) {
-      throw new Error(`${change.file} changed during setup. Run setup again.`);
+      throw new Error(`${change.file} changed during setup. run setup again.`);
     }
   }
   const written = [];
@@ -94,18 +94,18 @@ async function prepareDirectory(root) {
 
 async function setupInspection(vscode, context) {
   if (!vscode.workspace.isTrusted) {
-    await vscode.window.showInformationMessage('Trust this project before setting up inspection instructions.');
+    await vscode.window.showInformationMessage('trust this project before setting up inspection instructions.');
     return;
   }
   const folders = (vscode.workspace.workspaceFolders || []).filter(folder => folder.uri.scheme === 'file');
   const folder = folders.length === 1 ? folders[0] : await vscode.window.showQuickPick(
     folders.map(folder => ({ label: folder.name, description: folder.uri.fsPath, folder })),
-    { title: 'Specter: Choose a project' }).then(choice => choice?.folder);
+    { title: 'specter: choose a project' }).then(choice => choice?.folder);
   if (!folder) return;
   const targets = ['AGENTS.md', '.gitignore', HELPER].map(file => vscode.Uri.joinPath(folder.uri, file).toString());
   const dirty = () => vscode.workspace.textDocuments.some(doc => doc.isDirty && targets.includes(doc.uri.toString()));
   if (dirty()) {
-    await vscode.window.showInformationMessage('Save AGENTS.md, .gitignore, and the inspection helper before setup.');
+    await vscode.window.showInformationMessage('save AGENTS.md, .gitignore, and the inspection helper before setup.');
     return;
   }
   try {
@@ -114,18 +114,18 @@ async function setupInspection(vscode, context) {
     const root = folder.uri.fsPath;
     const changes = await prepareSetup(root, helper);
     if (!changes.length) {
-      await vscode.window.showInformationMessage('Inspections are already set up for this project.');
+      await vscode.window.showInformationMessage('inspections are already set up for this project.');
       return;
     }
     const choice = await vscode.window.showInformationMessage(
-      `Set up inspections in ${folder.name}? Adds a local helper and agent instructions. Updates: ${changes.map(change => change.file).join(', ')}. Requires Node.js 18 or newer.`,
-      { modal: true }, 'Set up');
-    if (choice !== 'Set up' || dirty() || !vscode.workspace.isTrusted ||
+      `set up inspections in ${folder.name}? adds a local helper and agent instructions. updates: ${changes.map(change => change.file).join(', ')}. requires node.js 18 or newer.`,
+      { modal: true }, 'set up');
+    if (choice !== 'set up' || dirty() || !vscode.workspace.isTrusted ||
       !vscode.workspace.workspaceFolders?.some(item => item.uri.toString() === folder.uri.toString())) return;
     await applySetup(root, changes);
-    await vscode.window.showInformationMessage('Inspections are set up. Your agent needs to read the new AGENTS.md instructions.');
+    await vscode.window.showInformationMessage('inspections are set up. your agent needs to read the new AGENTS.md instructions.');
   } catch (error) {
-    await vscode.window.showInformationMessage(`Inspection setup stopped: ${error.message}`);
+    await vscode.window.showInformationMessage(`inspection setup stopped: ${error.message}`);
   }
 }
 

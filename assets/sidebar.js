@@ -58,13 +58,13 @@
       button.className = 'recent-button';
       button.dataset.id = entry.id;
       button.textContent = entry.file;
-      const time = new Date(entry.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      button.title = `Replay ${entry.file} (${time})${entry.skipped ? ' — skipped while catching up' : ''}`;
+      const time = new Date(entry.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).toLowerCase();
+      button.title = `replay ${entry.file} (${time})${entry.skipped ? ' — skipped while catching up' : ''}`;
       button.disabled = !state.enabled;
       row.append(button);
       const label = document.createElement('span');
       label.className = 'hint';
-      label.textContent = entry.skipped ? 'Skipped' : time;
+      label.textContent = entry.skipped ? 'skipped' : time;
       row.append(label);
       return row;
     });
@@ -79,7 +79,7 @@
   function render(state) {
     latestState = state;
     update('settings-scope', 'textContent', state.configurationScope === 'workspace'
-      ? 'Saved for this project.' : 'Saved in your VS Code settings.');
+      ? 'saved for this project.' : 'saved in your vs code settings.');
     if (statusCard.dataset.status !== state.status) statusCard.dataset.status = state.status;
     update('status-title', 'textContent', state.title);
     update('status-title', 'title', state.title);
@@ -90,12 +90,12 @@
     update('current-file', 'textContent', location);
     update('current-file', 'title', location);
     update('queue', 'textContent', state.pending
-      ? `${state.pending} ${state.pending === 1 ? 'change' : 'changes'} queued` : 'Nothing queued');
+      ? `${state.pending} ${state.pending === 1 ? 'change' : 'changes'} queued` : 'nothing queued');
     update('skipped', 'textContent', state.skipped
-      ? `${state.skipped} skipped while catching up. Check recent edits.` : '');
+      ? `${state.skipped} skipped while catching up. check recent edits.` : '');
     update('skip', 'disabled', !state.canSkip);
     update('test', 'disabled', state.testing);
-    update('test', 'textContent', state.testing ? 'Testing…' : 'Test Specter');
+    update('test', 'textContent', state.testing ? 'testing…' : 'test specter');
     update('progress', 'hidden', state.progress === null);
     update('progress', 'value', state.progress ?? 0);
     for (const key of settings) {

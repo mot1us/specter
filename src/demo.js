@@ -1,13 +1,13 @@
 'use strict';
 
 // Enough bounded sample text to keep typing for 30 seconds even at 400 chars/s.
-const before = '// Specter test\nconst message = "Hello";\n\nconsole.log(message);\n';
+const before = '// specter test\nconst message = "hello";\n\nconsole.log(message);\n';
 const after = [
-  '// Specter test',
-  'const message = "Specter is working";',
+  '// specter test',
+  'const message = "specter is working";',
   'const items = [',
   ...Array.from({ length: 200 }, (_, index) =>
-    `  { id: ${index + 1}, label: "Sample item ${String(index + 1).padStart(3, '0')}: try the speed slider or Skip", ready: true },`),
+    `  { id: ${index + 1}, label: "sample item ${String(index + 1).padStart(3, '0')}: try the speed slider or skip", ready: true },`),
   '];',
   '',
   'const readyItems = items.filter(item => item.ready);',

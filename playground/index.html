@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#faf9f6">
-    <meta name="description" content="A small, local task board. A little space to make things happen.">
-    <title>Little Things — your daily board</title>
+    <meta name="description" content="a small, local task board. a little space to make things happen.">
+    <title>little things — your daily board</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23ed704c'/%3E%3Cpath d='M18 33l9 9 19-21' fill='none' stroke='white' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     <link rel="stylesheet" href="styles.css">
     <script type="module" src="app.js"></script>
@@ -21,89 +21,89 @@
     </svg>
 
     <header class="topbar">
-      <a class="brand" href="./" aria-label="Little Things home">
+      <a class="brand" href="./" aria-label="little things home">
         <span class="brand-mark"><svg class="icon"><use href="#icon-check"/></svg></span>
         little things<span class="brand-dot">.</span>
       </a>
       <div class="topbar-actions">
-        <span class="local-badge"><span></span> YOUR LOCAL SPACE</span>
-        <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+        <span class="local-badge"><span></span> your local space</span>
+        <button class="icon-button" id="theme-toggle" type="button" aria-label="switch to dark theme" aria-pressed="false">
           <svg class="icon"><use href="#icon-moon"/></svg>
         </button>
-        <span class="avatar" aria-label="Personal workspace">Y</span>
+        <span class="avatar" aria-label="personal workspace">y</span>
       </div>
     </header>
 
     <main class="workspace">
       <section class="intro" aria-labelledby="page-title">
         <div>
-          <p class="eyebrow"><span class="tiny-star">✳</span> SMALL STEPS. GOOD DAYS.</p>
-          <h1 id="page-title">A little space to<br><span>make things happen.</span></h1>
-          <p class="intro-copy">Clear your head. Pick a thing. Make a little progress.</p>
+          <p class="eyebrow"><span class="tiny-star">✳</span> small steps. good days.</p>
+          <h1 id="page-title">a little space to<br><span>make things happen.</span></h1>
+          <p class="intro-copy">clear your head. pick a thing. make a little progress.</p>
         </div>
-        <div class="date-stamp"><span id="weekday">TODAY</span><strong id="date-label"></strong><span>A FRESH START</span></div>
+        <div class="date-stamp"><span id="weekday">today</span><strong id="date-label"></strong><span>a fresh start</span></div>
       </section>
 
       <div class="board-layout">
         <section class="board" aria-labelledby="board-title">
           <div class="board-heading">
-            <div><p class="eyebrow">YOUR DAILY DOSE OF DOING</p><h2 id="board-title">The small stuff <span id="total-count" class="count-badge">0</span></h2></div>
-            <button class="button button-primary" id="new-task" type="button"><svg class="icon"><use href="#icon-plus"/></svg> New task</button>
+            <div><p class="eyebrow">your daily dose of doing</p><h2 id="board-title">the small stuff <span id="total-count" class="count-badge">0</span></h2></div>
+            <button class="button button-primary" id="new-task" type="button"><svg class="icon"><use href="#icon-plus"/></svg> new task</button>
           </div>
 
           <div class="board-toolbar">
-            <div class="filters" role="group" aria-label="Filter tasks">
-              <button type="button" data-filter="all" aria-pressed="true">All tasks <span id="all-count">0</span></button>
-              <button type="button" data-filter="open" aria-pressed="false">To do <span id="open-count">0</span></button>
-              <button type="button" data-filter="done" aria-pressed="false">Done <span id="done-count">0</span></button>
+            <div class="filters" role="group" aria-label="filter tasks">
+              <button type="button" data-filter="all" aria-pressed="true">all tasks <span id="all-count">0</span></button>
+              <button type="button" data-filter="open" aria-pressed="false">to do <span id="open-count">0</span></button>
+              <button type="button" data-filter="done" aria-pressed="false">done <span id="done-count">0</span></button>
             </div>
-            <label class="search"><svg class="icon"><use href="#icon-search"/></svg><input id="search" type="search" placeholder="Find a task…" aria-label="Search tasks"></label>
+            <label class="search"><svg class="icon"><use href="#icon-search"/></svg><input id="search" type="search" placeholder="find a task…" aria-label="search tasks"></label>
           </div>
 
           <form id="task-form" class="task-form" hidden>
-            <label for="task-title">What’s one thing you want to do?</label>
-            <input id="task-title" name="title" placeholder="Give your next small step a name…" maxlength="120" required autocomplete="off">
+            <label for="task-title">what’s one thing you want to do?</label>
+            <input id="task-title" name="title" placeholder="give your next small step a name…" maxlength="120" required autocomplete="off">
             <div class="form-bottom">
-              <label class="category-field">Category <select name="category" aria-label="Task category"><option>Personal</option><option>Work</option><option>Wellbeing</option></select></label>
-              <div><button class="button button-quiet" id="cancel-task" type="button">Cancel</button><button class="button button-primary" type="submit">Add task <svg class="icon"><use href="#icon-arrow"/></svg></button></div>
+              <label class="category-field">category <select name="category" aria-label="task category"><option>personal</option><option>work</option><option>wellbeing</option></select></label>
+              <div><button class="button button-quiet" id="cancel-task" type="button">cancel</button><button class="button button-primary" type="submit">add task <svg class="icon"><use href="#icon-arrow"/></svg></button></div>
             </div>
           </form>
 
-          <ul id="task-list" class="task-list" aria-label="Your tasks"></ul>
+          <ul id="task-list" class="task-list" aria-label="your tasks"></ul>
           <div id="empty-state" class="empty-state" hidden><span>✳</span><h3 id="empty-title"></h3><p id="empty-copy"></p></div>
-          <div class="board-footer"><span><span class="save-dot"></span> <span id="save-status">Saved on this device</span></span><span>A little is enough.</span></div>
+          <div class="board-footer"><span><span class="save-dot"></span> <span id="save-status">saved on this device</span></span><span>a little is enough.</span></div>
         </section>
 
-        <aside class="sidebar" aria-label="Your progress">
+        <aside class="sidebar" aria-label="your progress">
           <section class="progress-card">
-            <div class="card-kicker"><span class="eyebrow">LOOK AT YOU GO</span><span class="sparkle">✧</span></div>
-            <h2>A little progress,<br>every day.</h2>
+            <div class="card-kicker"><span class="eyebrow">look at you go</span><span class="sparkle">✧</span></div>
+            <h2>a little progress,<br>every day.</h2>
             <div class="progress-number"><strong id="progress-percent">0%</strong><span>of your list, done</span></div>
-            <div class="progress-track" role="progressbar" aria-label="Tasks completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar"><span id="progress-fill"></span></div>
-            <p id="progress-caption">Every little checkmark counts.</p>
+            <div class="progress-track" role="progressbar" aria-label="tasks completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress-bar"><span id="progress-fill"></span></div>
+            <p id="progress-caption">every little checkmark counts.</p>
             <div class="progress-stats"><div><strong id="remaining-stat">0</strong><span>still to do</span></div><div><strong id="completed-stat">0</strong><span>little wins</span></div></div>
           </section>
 
           <section class="note-card">
-            <span class="note-label">A NOTE TO YOURSELF</span>
+            <span class="note-label">a note to yourself</span>
             <svg class="flower" viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="60" cy="35" rx="12" ry="24"/><ellipse cx="60" cy="35" rx="12" ry="24" transform="rotate(60 60 60)"/><ellipse cx="60" cy="35" rx="12" ry="24" transform="rotate(120 60 60)"/><ellipse cx="60" cy="35" rx="12" ry="24" transform="rotate(180 60 60)"/><ellipse cx="60" cy="35" rx="12" ry="24" transform="rotate(240 60 60)"/><ellipse cx="60" cy="35" rx="12" ry="24" transform="rotate(300 60 60)"/><circle cx="60" cy="60" r="12" fill="currentColor"/></g></svg>
-            <p>You don’t have to do it all.<br>Just the next little thing.</p>
-            <span class="note-signoff">You’ve got this.</span>
+            <p>you don’t have to do it all.<br>just the next little thing.</p>
+            <span class="note-signoff">you’ve got this.</span>
           </section>
-          <button class="reset-button" id="reset-demo" type="button">↺ &nbsp; Reset the sample board</button>
+          <button class="reset-button" id="reset-demo" type="button">↺ &nbsp; reset the sample board</button>
         </aside>
       </div>
 
-      <footer class="page-footer"><span>Made for a slower, more intentional day.</span><button id="test-guide" type="button">Specter playground <svg class="icon"><use href="#icon-arrow"/></svg></button></footer>
+      <footer class="page-footer"><span>made for a slower, more intentional day.</span><button id="test-guide" type="button">specter playground <svg class="icon"><use href="#icon-arrow"/></svg></button></footer>
     </main>
 
     <dialog id="guide-dialog" class="guide-dialog" aria-labelledby="guide-title">
-      <p class="eyebrow">WATCH YOUR CODE COME TO LIFE</p>
-      <h2 id="guide-title">Your Specter playground.</h2>
-      <p>Enable Specter in VS Code, then ask your agent to change something in this app. Watch the saved edits replay in the editor.</p>
-      <ol><li>Try a color change in <code>playground/styles.css</code>.</li><li>Change the sample tasks in <code>playground/data.js</code>, then reset this board.</li><li>Add a feature to <code>playground/app.js</code>.</li></ol>
-      <p class="guide-hint">Try pause, typing speed, changed lines, separate pane, and recent edits while the files change. Refresh this page to see code changes.</p>
-      <form method="dialog"><button class="button button-primary">Got it <svg class="icon"><use href="#icon-check"/></svg></button></form>
+      <p class="eyebrow">watch your code come to life</p>
+      <h2 id="guide-title">your specter playground.</h2>
+      <p>enable specter in vs code, then ask your agent to change something in this app. watch the saved edits replay in the editor.</p>
+      <ol><li>try a color change in <code>playground/styles.css</code>.</li><li>change the sample tasks in <code>playground/data.js</code>, then reset this board.</li><li>add a feature to <code>playground/app.js</code>.</li></ol>
+      <p class="guide-hint">try pause, typing speed, changed lines, separate pane, and recent edits while the files change. refresh this page to see code changes.</p>
+      <form method="dialog"><button class="button button-primary">got it <svg class="icon"><use href="#icon-check"/></svg></button></form>
     </dialog>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
   </body>

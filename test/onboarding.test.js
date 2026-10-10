@@ -22,7 +22,7 @@ test('a fresh project stays paused until the user enables following', async t =>
   await new Promise(resolve => setTimeout(resolve, 150));
   assert.equal(controller.enabled, false);
   assert.equal(mock.shown.length, 0);
-  choice.resolve('Enable for this project');
+  choice.resolve('enable for this project');
   await until(() => controller.enabled);
   assert.equal(mock.workspaceValues.get('followDecision'), true);
   mock.write(mock.uri('after.js'), 'const after = true;', true);
@@ -31,7 +31,7 @@ test('a fresh project stays paused until the user enables following', async t =>
 });
 
 test('keeping a project paused is remembered and the sidebar can enable it later', async t => {
-  const { mock, controller } = fixture(t, { firstUseChoice: 'Keep paused' });
+  const { mock, controller } = fixture(t, { firstUseChoice: 'keep paused' });
   await controller.start();
   await until(() => !controller.promptPending);
   assert.equal(controller.enabled, false);
@@ -81,7 +81,7 @@ test('a late first-use response cannot enable a disposed controller', async t =>
   await controller.start();
   await until(() => mock.informationMessages.length === 1);
   controller.dispose();
-  choice.resolve('Enable for this project');
+  choice.resolve('enable for this project');
   await until(() => !controller.promptPending);
   assert.equal(mock.workspaceValues.get('followDecision'), false);
   assert.equal(mock.config.enabled, true, 'the default was not changed by a stale response');

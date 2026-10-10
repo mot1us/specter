@@ -1,36 +1,36 @@
-# Optional inspection setup
+# optional inspection setup
 
-Saved edits show up once you enable Specter. This setup lets your agent
+saved edits show up once you enable specter. this setup lets your agent
 show the file and line it's checking during a code check.
 
-## From the sidebar
+## from the sidebar
 
-Click **Set up inspections**. Choose a project if you have more than one open.
-Specter lists the files before making changes:
+click **set up inspections**. choose a project if you have more than one open.
+specter lists the files before making changes:
 
 - `.specter/inspect-line.cjs` — a standalone local helper.
 - `AGENTS.md` — adds the inspection note and keeps existing instructions.
 - `.gitignore` — adds `.codex-live-follow/` for temporary activity reports.
 
-Save any unsaved edits in those files first. Setup leaves a conflicting helper
-alone, refuses symlink targets, and asks for workspace trust. Running setup
-again doesn't add the note twice. Your agent needs to read the updated
+save any unsaved edits in those files first. setup leaves a conflicting helper
+alone, refuses symlink targets, and asks for workspace trust. running setup
+again doesn't add the note twice. your agent needs to read the updated
 `AGENTS.md`; start a new prompt if it already read the old instructions.
 
-To try the guided helper from the project root:
+to try the guided helper from the project root:
 
 ```sh
 node .specter/inspect-line.cjs src/app.js 12 "Checking the calculation"
 ```
 
-## Manual setup
+## manual setup
 
-1. Download `inspect-line.js` from the same GitHub Release as your VSIX.
-   It needs Node.js 18 or newer. No npm install.
-2. Copy it into your project's `scripts/` directory.
-3. Add `.codex-live-follow/` to that project's `.gitignore`.
-4. Add the note below to your project's `AGENTS.md`. Keep its other instructions.
-   Create the file if you don't have one.
+1. download `inspect-line.js` from the same github release as your vsix.
+   it needs node.js 18 or newer. no npm install.
+2. copy it into your project's `scripts/` directory.
+3. add `.codex-live-follow/` to that project's `.gitignore`.
+4. add the note below to your project's `AGENTS.md`. keep its other instructions.
+   create the file if you don't have one.
 
 ```markdown
 ## Specter inspection reports
@@ -44,22 +44,22 @@ possible cause. Keep fixing and checking the issue. Reports stay local and don't
 edit source files.
 ```
 
-## Try it
+## try it
 
-With your project open in VS Code and replay enabled, run the helper from the
+with your project open in vs code and replay enabled, run the helper from the
 project root using an existing source file:
 
 ```sh
 node scripts/inspect-line.js src/app.js 12 "Checking how this value is calculated"
 ```
 
-Specter opens the real file, highlights the line, and shows **Taking a look**.
-Then ask Codex to check a bug. It can report the locations as it works.
-Saved edits still show up if the agent skips these reports.
+specter opens the real file, highlights the line, and shows **taking a look**.
+then ask codex to check a bug. it can report the locations as it works.
+saved edits still show up if the agent skips these reports.
 
-## Without the helper
+## without the helper
 
-An agent can write `.codex-live-follow/activity.json` directly. Use a fresh `id`, a
+an agent can write `.codex-live-follow/activity.json` directly. use a fresh `id`, a
 workspace-relative path, positive one-based line numbers, and a message up to 500
 characters. `endLine` is optional. `phase` is `inspect` or `suspect`.
 
@@ -67,8 +67,8 @@ characters. `endLine` is optional. `phase` is `inspect` or `suspect`.
 {"id":"new-report-123","path":"src/app.js","line":12,"message":"Checking the calculation","phase":"inspect"}
 ```
 
-Specter shows new reports. It skips old reports at startup. Visits use the
-locations the agent reports. Pause and unsaved edit protection still apply.
+specter shows new reports. it skips old reports at startup. visits use the
+locations the agent reports. pause and unsaved edit protection still apply.
 
-To remove this setup, delete the helper (`.specter/inspect-line.cjs` for guided setup), the added agent note, and
-`.codex-live-follow/`. Saved edit replay keeps working.
+to remove this setup, delete the helper (`.specter/inspect-line.cjs` for guided setup), the added agent note, and
+`.codex-live-follow/`. saved edit replay keeps working.

@@ -5,14 +5,20 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const manifest = require('../package.json');
 
-function releaseBeta(options = {}) {
-  const env = options.env || process.env;
+function validateEnvironment(env) {
   const repository = env.GITHUB_REPOSITORY;
   const commit = env.GITHUB_SHA;
   if (repository !== 'mot1us/specter' || !/^[a-f0-9]{40}$/.test(commit || '') ||
       env.GITHUB_EVENT_NAME !== 'push' || env.GITHUB_REF !== 'refs/heads/main') {
-    throw new Error('Beta releases run only in the repository workflow at an exact commit.');
+    throw new Error('beta releases run only in the repository workflow at an exact commit.');
   }
+  return repository;
+}
+
+function releaseBeta(options = {}) {
+  const env = options.env || process.env;
+  const repository = validateEnvironment(env);
+  const commit = env.GITHUB_SHA;
   const tag = `v${manifest.version}`;
   const run = options.run || (args => spawnSync('gh', args, { encoding: 'utf8' }));
   const log = options.log || console.log;
@@ -53,4 +59,4 @@ function releaseBeta(options = {}) {
 if (require.main === module) {
   try { releaseBeta(); } catch (error) { console.error(error.message); process.exitCode = 1; }
 }
-module.exports = { releaseBeta };
+module.exports = { releaseBeta, validateEnvironment };

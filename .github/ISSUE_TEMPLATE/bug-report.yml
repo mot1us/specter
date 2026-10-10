@@ -1,32 +1,32 @@
-name: Bug report
-description: Report an installation or Live Follow behavior problem
+name: bug report
+description: report an installation or live follow behavior problem
 body:
   - type: input
     id: versions
     attributes:
-      label: Extension version and VS Code version
+      label: extension version and vs code version
     validations:
       required: true
   - type: dropdown
     id: platform
     attributes:
-      label: Operating system
+      label: operating system
       options:
-        - macOS
-        - Windows
-        - Linux
+        - macos
+        - windows
+        - linux
     validations:
       required: true
   - type: textarea
     id: reproduce
     attributes:
-      label: What happened and how to reproduce it
-      description: Include your replay mode and whether the folder is local. Use disposable code and avoid private source or paths.
+      label: what happened and how to reproduce it
+      description: include your replay mode and whether the folder is local. use disposable code and avoid private source or paths.
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: What did you expect?
+      label: what did you expect?
     validations:
       required: true

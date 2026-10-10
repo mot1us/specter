@@ -3,11 +3,25 @@
 const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const { LiveFollow } = require('../src/controller');
-const { parseInspection } = require('../src/inspection');
+const { parseInspection, InspectionFeed } = require('../src/inspection');
 const { createVscodeMock, until, deferred } = require('./helpers/vscode');
 
 const report = overrides => ({ id: 'first', path: 'bug.js', line: 2,
   message: 'Checking the return value', ...overrides });
+
+test('source reads and inspection reports reject file symlinks before reading bytes', async t => {
+  const mock = createVscodeMock();
+  const controller = new LiveFollow(mock.vscode, mock.context);
+  const feed = new InspectionFeed(mock.vscode, () => assert.fail('linked reports must not run'));
+  t.after(() => { feed.dispose(); controller.dispose(); mock.dispose(); });
+  mock.hooks.stat = async () => ({ type: mock.vscode.FileType.File | mock.vscode.FileType.SymbolicLink, size: 10 });
+  mock.hooks.readFile = () => assert.fail('linked files must not be read');
+  assert.equal(await controller.readText(mock.uri('linked.js')), null);
+  const signal = mock.uri('.codex-live-follow/activity.json');
+  feed.revisions.set(signal.toString(), 1);
+  await feed.read(signal, mock.vscode.workspace.workspaceFolders[0], signal.toString(), 1, 0);
+  assert.equal(feed.seen.size, 0);
+});
 
 async function fixture(t, config = {}) {
   const mock = createVscodeMock({ config: { inspectionDisplayMs: 300, ...config } });
@@ -38,7 +52,7 @@ test('a reported line is revealed without editing source or creating a typing re
   assert.equal(mock.shown[0].document.uri.toString(), uri.toString());
   assert.equal(mock.shown[0].editor.revealed.start.line, 1);
   assert.equal(controller.getState().status, 'inspecting');
-  assert.equal(controller.getState().title, 'Checking a hunch');
+  assert.equal(controller.getState().title, 'checking a hunch');
   assert.equal(controller.getState().line, 2);
   assert.equal(controller.getState().progress, null);
   assert.equal(mock.frames.length, 0);
