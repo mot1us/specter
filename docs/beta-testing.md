@@ -33,7 +33,7 @@ use throwaway code in examples. logs and recordings can show your source and pat
 
 get 3–5 independent testers through installation and everyday use. fix installation
 failures, problems with source editing, incomplete replays, and blocking ui issues.
-keep the platform checks green and add guided inspection setup.
+keep the platform checks green and verify guided inspection setup.
 
 [github actions](https://github.com/mot1us/specter/actions) records the
 automated checks. independent tester feedback still needs to be collected.
@@ -44,10 +44,10 @@ automated checks. independent tester feedback still needs to be collected.
   of typing followed by a 5-second line-2 inspection, with no file or setting changes.
 - move the speed slider during the demo; typing should change speed while the
   progress bar continues counting demo time.
-- stop the sample using skip current or pause replay; its preview tabs should close.
+- stop the sample using skip or pause replay; its preview tabs should close.
 - background vs code while saved edits and inspections arrive. only the latest
   inspection per project should wait, and saved edits should play first.
-- choose separate pane and keep another file open beside the replay.
+- choose beside my code and keep another file open beside the replay.
 - save two distant edits in one file; the middle should stay visible.
 - click an older recent edit; the actual file should keep its newest content.
 - save many different files at once; check the skipped count and recent list.

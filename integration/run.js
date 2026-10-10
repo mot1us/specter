@@ -58,8 +58,8 @@ async function run() {
     await until(() => api.getState().status === 'inspecting' && api.getState().line === 2 && sampleInspectionVisible(),
       '30-second sample typing finishes and a line-2 inspection is displayed', 45000);
     assert.ok(Date.now() - demoStarted >= 30000, 'demo must not finish at the normal one-second replay limit');
-    assert.ok(demoFrames.some(frame => frame.includes('"S') && !frame.includes('console.log(item.label);')),
-      `sample generates partial typing frames even while paused; observed ${JSON.stringify(demoFrames)}`);
+    assert.ok(demoFrames.some(frame => frame.includes('"s') && !frame.includes('console.log(item.label);')),
+      `sample generates partial typing frames even while paused; observed ${demoFrames.length} frames, first: ${JSON.stringify(demoFrames[0]?.slice(0, 120))}`);
     assert.ok(demoFrames.some(frame => frame.includes('specter is working')));
     await vscode.commands.executeCommand('codexLiveFollow.skipReplay');
     await until(() => !api.getState().testing && !vscode.window.tabGroups.all.some(group =>

@@ -53,6 +53,9 @@ a fix, increment the version and release a new package.
 ## before marketplace publication
 
 - resolve publisher registration and confirm the identity is controlled by the owner.
+- package the first marketplace beta with `vsce package --pre-release --no-dependencies`
+  and upload it as a pre-release. github prerelease labels do not set marketplace
+  pre-release metadata; use a distinct version for a later stable release.
 - collect successful everyday-use feedback from 3–5 independent testers and fix
   installation or source editing problems. see [beta testing](beta-testing.md).
 - verify guided inspection setup and keep manual instructions available.
